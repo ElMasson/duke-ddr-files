@@ -1,0 +1,14 @@
+streamlit
+pandas
+numpy
+openpyxl
+xlrd
+
+crewai
+crewai-tools
+crewai[agentops]
+
+python-dotenv
+langchain
+langchain-openai
+langchain-community

@@ -9,14 +9,13 @@ from file_loader.utils import get_file_extension
 import time
 import agentops
 
-
 # Load environment variables
 load_dotenv()
 
-
-#init agentops
+# init agentops
 agentops.init(api_key="7c70392b-f574-456d-aa56-1196d9d1c5b8",
-    default_tags=['crewai'])
+              default_tags=['crewai'])
+
 
 def create_catalog_crew(file):
     """
@@ -75,7 +74,7 @@ def create_catalog_crew(file):
         actionable recommendations. You run comprehensive code to document precisely the data quality issues""",
         verbose=True,
         allow_delegation=False,
-        allow_code_execution=True # This automatically adds the CodeInterpreterTool
+        allow_code_execution=True  # This automatically adds the CodeInterpreterTool
     )
 
     business_glossary_agent = Agent(
@@ -142,7 +141,7 @@ def create_catalog_crew(file):
         """,
         agent=data_analyzer,
         expected_output="A comprehensive analysis of the file structure and content in markdown format"
-        #human_input=True
+        # human_input=True
     )
 
     # Task 2: Schema Extraction
@@ -166,7 +165,7 @@ def create_catalog_crew(file):
         agent=schema_extractor,
         expected_output="A formal schema definition for the data file in markdown format",
         context=[file_analysis_task]
-        #human_input=True
+        # human_input=True
     )
 
     # Task 3: Metadata Curation
@@ -192,7 +191,7 @@ def create_catalog_crew(file):
         agent=metadata_curator,
         expected_output="Comprehensive metadata for the data file in markdown format",
         context=[schema_extraction_task]
-        #human_input=True
+        # human_input=True
     )
 
     # Task 4: Data Quality Assessment
@@ -210,14 +209,14 @@ def create_catalog_crew(file):
         5. Suggest specific improvements to enhance data quality
 
         Provide a detailed data quality assessment in markdown format.
-        
+
 
         IMPORTANT: Check with the human user if your quality assessment is thorough enough and if they have additional quality concerns.
         """,
         agent=data_quality_agent,
         expected_output="A comprehensive data quality assessment in markdown format",
         context=[file_analysis_task, schema_extraction_task, metadata_curation_task]
-        #human_input=True
+        # human_input=True
     )
 
     # Task 5: Business Glossary
@@ -243,7 +242,7 @@ def create_catalog_crew(file):
         agent=business_glossary_agent,
         expected_output="A business glossary for the data file in markdown format",
         context=[metadata_curation_task]
-        #human_input=True
+        # human_input=True
     )
 
     # Task 6: Documentation
@@ -263,13 +262,14 @@ def create_catalog_crew(file):
         The documentation should serve as a complete reference for this data asset.
         Format your response in markdown.
 
-        
+
         """,
         agent=documentation_agent,
         expected_output="Comprehensive documentation for the data catalog entry in markdown format",
-        context=[file_analysis_task, schema_extraction_task,data_quality_task, metadata_curation_task, business_glossary_task]
+        context=[file_analysis_task, schema_extraction_task, data_quality_task, metadata_curation_task,
+                 business_glossary_task]
 
-        #human_input=True
+        # human_input=True
     )
 
     # Task 7: Documentation
@@ -307,7 +307,7 @@ def create_catalog_crew(file):
     # Create the crew
     crew = Crew(
         manager_llm='o3-mini',
-        #manager_agent=manager,
+        # manager_agent=manager,
         agents=[
             data_analyzer,
             schema_extractor,
@@ -323,7 +323,7 @@ def create_catalog_crew(file):
             data_quality_task,
             business_glossary_task,
             documentation_task
-#            yaml_catalog_task
+            #            yaml_catalog_task
         ],
         process=Process.hierarchical,
         verbose=True
